@@ -3,104 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Options Exit Price Calculator</title>
+    <title>Stock Options Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background: #f4f4f9;
+            color: #333;
+        }
+        .hero {
+            background: url('https://source.unsplash.com/1600x400/?finance,stock') no-repeat center center/cover;
+            color: #fff;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 2.5em;
+            margin: 0;
+            color: #000; /* Black color for the heading */
+        }
+        .hero p {
+            color: #000; /* Black color for the subtitle */
+            font-size: 1.2em;
         }
         .container {
-            background-color: #fff;
+            max-width: 600px;
+            margin: -50px auto 20px;
             padding: 20px;
+            background: #fff;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 500px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
         }
         label {
             display: block;
-            margin: 10px 0 5px;
+            margin-bottom: 8px;
             font-weight: bold;
         }
-        input {
-            padding: 10px;
+        input[type="number"], input[type="text"], input[type="button"] {
             width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            margin-bottom: 10px;
-            font-size: 16px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added shadow for depth */
         }
-        button {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
+        input[type="button"] {
+            background-color: #28a745;
+            color: #fff;
             border: none;
-            border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
-            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Added shadow for depth */
         }
-        button:hover {
-            background-color: #45a049;
+        input[type="button"]:hover {
+            background-color: #218838;
         }
         .result {
             margin-top: 20px;
-            font-weight: bold;
+        }
+        .result p {
+            font-size: 1.2em;
+            margin: 5px 0;
+        }
+        .icon {
+            font-size: 2em;
+            margin-right: 10px;
+        }
+        .footer {
             text-align: center;
-            font-size: 18px;
-            color: #333;
+            padding: 20px;
+            background: #333;
+            color: #fff;
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+        }
+        .footer p {
+            margin: 0;
         }
     </style>
 </head>
 <body>
+    <div class="hero">
+        <h1>Stock Options Calculator</h1>
+        <p>Your tool for calculating investment and exit price</p>
+    </div>
+    
     <div class="container">
-        <h1>Stock Options Exit Price Calculator</h1>
-        <form id="calculator">
-            <label for="totalInvestment">Total Investment:</label>
-            <input type="number" id="totalInvestment" required>
+        <label for="lotSize">Lot Size:</label>
+        <input type="number" id="lotSize" placeholder="Enter lot size" />
 
-            <label for="lotSize">Lot Size:</label>
-            <input type="number" id="lotSize" required>
+        <label for="buyPrice">Buy Price per Option:</label>
+        <input type="number" id="buyPrice" placeholder="Enter buy price per option" />
 
-            <label for="pricePerOption">Price per Option:</label>
-            <input type="number" id="pricePerOption" step="0.01" required>
+        <label for="lotBought">Number of Lots Bought:</label>
+        <input type="number" id="lotBought" placeholder="Enter number of lots bought" />
 
-            <label for="percentage">Percentage of Total Investment:</label>
-            <input type="number" id="percentage" step="0.01" value="10" required>
+        <label for="investmentPercentage">Percentage for Exit Price:</label>
+        <input type="number" id="investmentPercentage" value="10" placeholder="Enter percentage" />
 
-            <button type="button" onclick="calculateExitPrice()">Calculate Exit Price</button>
-        </form>
+        <input type="button" value="Calculate Exit Price" onclick="calculateExitPrice()" />
 
-        <div class="result" id="result"></div>
+        <div class="result">
+            <p id="totalInvestment"><i class="fas fa-dollar-sign icon"></i>Total Investment: ₹<span id="totalInvestmentValue"></span></p>
+            <p id="exitPrice"><i class="fas fa-money-bill-wave icon"></i>Exit Price: ₹<span id="exitPriceValue"></span></p>
+            <p id="exitPricePerOption"><i class="fas fa-coins icon"></i>Exit Price per Option: ₹<span id="exitPricePerOptionValue"></span></p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Stock Options Calculator. Created by Ashutosh Singh.</p>
     </div>
 
     <script>
         function calculateExitPrice() {
-            var totalInvestment = parseFloat(document.getElementById('totalInvestment').value);
-            var lotSize = parseFloat(document.getElementById('lotSize').value);
-            var pricePerOption = parseFloat(document.getElementById('pricePerOption').value);
-            var percentage = parseFloat(document.getElementById('percentage').value) / 100;
+            const lotSize = parseFloat(document.getElementById('lotSize').value);
+            const buyPrice = parseFloat(document.getElementById('buyPrice').value);
+            const lotBought = parseFloat(document.getElementById('lotBought').value);
+            const investmentPercentage = parseFloat(document.getElementById('investmentPercentage').value) / 100;
 
-            if (isNaN(totalInvestment) || isNaN(lotSize) || isNaN(pricePerOption) || isNaN(percentage) || lotSize <= 0) {
-                alert('Please enter valid numbers.');
+            if (isNaN(lotSize) || isNaN(buyPrice) || isNaN(lotBought) || isNaN(investmentPercentage)) {
+                alert('Please enter valid numbers in all fields.');
                 return;
             }
 
-            var targetGain = totalInvestment * percentage;
-            var exitPrice = (targetGain / lotSize) + pricePerOption;
+            // Calculate Total Investment
+            const totalInvestment = lotSize * buyPrice * lotBought;
 
-            document.getElementById('result').textContent = 'Exit Price per Option: ' + exitPrice.toFixed(2);
+            // Calculate Target Gain
+            const targetGain = totalInvestment * investmentPercentage;
+
+            // Calculate Exit Price per Option
+            const exitPricePerOption = (targetGain / lotSize) + buyPrice;
+
+            // Display Results
+            document.getElementById('totalInvestmentValue').textContent = totalInvestment.toFixed(2);
+            document.getElementById('exitPriceValue').textContent = targetGain.toFixed(2);
+            document.getElementById('exitPricePerOptionValue').textContent = exitPricePerOption.toFixed(2);
         }
     </script>
 </body>
